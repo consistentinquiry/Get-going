@@ -8,7 +8,9 @@ echo "
  |_| |_|_|  \___/ \___/|_| |_|_| |_(_)"
 
 echo "------------------------------------"
-
+user=$(logname)
+echo "[INFO] The current user is:"
+echo $user
 echo "Let's get you started..."
 echo "Upgrading and updating..."
 echo "y" | sudo apt-get upgrade
@@ -16,30 +18,29 @@ echo "y" | sudo apt update
 echo "Installing Vim..."
 echo "y" | sudo apt install vim
 echo "Configuring Vim extension manager..."
-git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-touch ~/.vimrc
-sed -i '1s/^/set nocompatible              " required
-filetype off                  " required
+git clone https://github.com/gmarik/Vundle.vim.git $user/.vim/bundle/Vundle.vim
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
 
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
+echo "Configuring vimrc..."
+touch /home/$user/.vimrc
+file="/home/$user/.vimrc" 
+echo "set number" > $file
+echo "set nocompatible" >> $file            
+echo "filetype off" >> $file                 
+echo "set rtp+=~/.vim/bundle/Vundle.vim" >> $file
+echo "call vundle#begin()" >> $file
+echo "\n" >> $file
+echo "Plugin 'VundleVim/Vundle.vim'" >> $file
+echo "Plugin 'gmarik/Vundle.vim'" >> $file
+echo "\n" >> $file
+echo "call vundle#end()" >> $file  
+echo "filetype plugin indent on    " >> $file  
+echo "[INFO] Running vim plugin install cmd"
+vim +PluginInstall +qall
+chown john $file
+cat $file
 
-" let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
 
-" add all your plugins here (note older versions of Vundle
-" used Bundle instead of Plugin)
-
-" ...
-
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-\n/' ~/.vimrc
 echo "Installing git..."
 echo "y" | sudo apt install git
 echo "Installing tree..."
